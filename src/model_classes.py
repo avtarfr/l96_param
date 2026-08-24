@@ -3,6 +3,7 @@ from torch import nn, optim
 import torch.utils.data as Data
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 
 class LinearRegression(nn.Module):
@@ -77,3 +78,49 @@ class FlexibleFCNN(nn.Module):
         x = self.hidden_layers(x)
         return self.output_layer(x)
 
+def train_model(model, loss_fn, loader, optimizer, device):
+    model.train()
+    train_loss = 0
+    for batch_x, batch_y in loader:
+        batch_x, batch_y = batch_x.to(device), batch_y.to(device)
+        if len(batch_x.shape) == 1:
+            prediction = torch.squeeze(model(torch.unsqueeze(batch_x, 1))) # Add a dimension for the input features
+        else:
+            prediction = model(batch_x)
+        loss = loss_fn(prediction, batch_y)
+        train_loss += loss.item()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    return train_loss / len(loader)
+
+def test_model(model, loss_fn, loader, device):
+    model.eval()
+    test_loss = 0
+    with torch.no_grad():
+        for batch_x, batch_y in loader:
+            batch_x, batch_y = batch_x.to(device), batch_y.to(device)
+            if len(batch_x.shape) == 1:
+                prediction = torch.squeeze(model(torch.unsqueeze(batch_x, 1))) # Add a dimension for the input features
+            else:
+                prediction = model(batch_x)
+            loss = loss_fn(prediction, batch_y)
+            test_loss += loss.item()
+    return test_loss / len(loader)
+
+def fit_model(model, loss_fn, train_loader, test_loader, optimizer, device, epochs=100):
+    model = model.to(device)
+    train_losses = []
+    test_losses = []
+    start_time = time.time()
+    for epoch in range(epochs):
+        train_loss = train_model(model, loss_fn, train_loader, optimizer, device)
+        test_loss = test_model(model, loss_fn, test_loader, device)
+        train_losses.append(train_loss)
+        test_losses.append(test_loss)
+        if epoch % 10 == 0 or epoch == epochs - 1:  # Print every 10 epochs and the last epoch
+            elapsed_time = time.time() - start_time
+            print(f"Epoch {epoch+1}/{epochs}, Train Loss: {train_loss:.4f}, Test Loss: {test_loss:.4f}, Elapsed Time: {elapsed_time:.2f}s")
+    end_time = time.time()
+    print(f"Training completed in {end_time - start_time:.2f} seconds.")
+    return train_losses, test_losses
