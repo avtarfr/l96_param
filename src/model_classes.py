@@ -58,6 +58,7 @@ class FCNN_smooth(nn.Module):
 # generalizing
 class FlexibleFCNN(nn.Module):
     def __init__(self, input_size=1, hidden_size=32, num_hidden_layers=3, out_size=1, act_fn: type[nn.Module] = nn.ReLU):
+        super().__init__()
         layers = []
         # Input Layer
         layers.append(nn.Linear(input_size, hidden_size))
