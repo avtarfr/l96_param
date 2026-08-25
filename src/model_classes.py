@@ -144,7 +144,7 @@ class GCM_network:
         return L96_eq1_xdot(X, self.F) + np.squeeze(self.network(X_torch).data.cpu().numpy())
     def __call__(self, X0, dt, nt, param=[0]):
         time, hist, X = (
-            dt * np.arange(nt),
+            dt * np.arange(nt+1),
             np.zeros((nt+1, len(X0))) * np.nan,
             X0.copy()
         )
