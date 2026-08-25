@@ -133,13 +133,15 @@ class GCM_network:
         self.F = F
         self.network = network
         self.time_stepping = time_stepping
+
     def rhs(self, X, _):
-        if self.network.linear1.in_features == 1:
+        device = next(self.network.parameters()).device
+        if self.network.hidden_layers[0].in_features == 1:
             X_torch = torch.from_numpy(X)
-            X_torch = torch.unsqueeze(X_torch, 1)  # Add a dimension for the input features
+            X_torch = torch.unsqueeze(X_torch, 1).to(device)  # Add a dimension for the input features
         else:
-            X_torch = torch.from_numpy(np.expand_dims(X, 0))
-        return L96_eq1_xdot(X, self.F) + np.squeeze(self.network(X_torch).data.numpy())
+            X_torch = torch.from_numpy(np.expand_dims(X, 0)).to(device)
+        return L96_eq1_xdot(X, self.F) + np.squeeze(self.network(X_torch).data.cpu().numpy())
     def __call__(self, X0, dt, nt, param=[0]):
         time, hist, X = (
             dt * np.arange(nt),
@@ -152,4 +154,3 @@ class GCM_network:
             X = self.time_stepping(self.rhs, dt, X, param)
             hist[n+1], time[n+1] = X, dt * (n+1)
         return hist, time
-        
