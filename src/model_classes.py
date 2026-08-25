@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
+from l96_model import RK4, L96_eq1_xdot
+
 
 class LinearRegression(nn.Module):
     def __init__(self):
@@ -125,3 +127,29 @@ def fit_model(model, loss_fn, train_loader, test_loader, optimizer, device, epoc
     end_time = time.time()
     print(f"Training completed in {end_time - start_time:.2f} seconds.")
     return train_losses, test_losses
+
+class GCM_network:
+    def __init__(self, F, network, time_stepping=RK4):
+        self.F = F
+        self.network = network
+        self.time_stepping = time_stepping
+    def rhs(self, X, _):
+        if self.network.linear1.in_features == 1:
+            X_torch = torch.from_numpy(X)
+            X_torch = torch.unsqueeze(X_torch, 1)  # Add a dimension for the input features
+        else:
+            X_torch = torch.from_numpy(np.expand_dims(X, 0))
+        return L96_eq1_xdot(X, self.F) + np.squeeze(self.network(X_torch).data.numpy())
+    def __call__(self, X0, dt, nt, param=[0]):
+        time, hist, X = (
+            dt * np.arange(nt),
+            np.zeros((nt+1, len(X0))) * np.nan,
+            X0.copy()
+        )
+        hist[0] = X
+
+        for n in range(nt):
+            X = self.time_stepping(self.rhs, dt, X, param)
+            hist[n+1], time[n+1] = X, dt * (n+1)
+        return hist, time
+        
