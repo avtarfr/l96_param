@@ -6,8 +6,8 @@ import numpy as np
 import torch
 from torch import nn
 
-from l96_model import L96
-from model_classes import FlexibleFCNN, GCM_network
+from project_1_archive.src.l96_model import L96
+from project_1_archive.src.model_classes import FlexibleFCNN, GCM_network
 
 
 steps = [100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200]  # Different time steps for datasets

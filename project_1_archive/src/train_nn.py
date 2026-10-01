@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.utils.data as Data
 import numpy as np
 import matplotlib.pyplot as plt
-import model_classes
+import project_1_archive.src.model_classes as model_classes
 
 steps = [100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200]  # Different time steps for datasets
 for step in steps:

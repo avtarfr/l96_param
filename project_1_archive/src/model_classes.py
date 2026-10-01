@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
-from l96_model import RK4, L96_eq1_xdot
+from project_1_archive.src.l96_model import RK4, L96_eq1_xdot
 
 
 class LinearRegression(nn.Module):

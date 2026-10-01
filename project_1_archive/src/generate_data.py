@@ -7,7 +7,7 @@ current_dir = os.path.abspath(os.getcwd())
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from l96_model import L96, RK2, RK4, EulerFwd, L96_eq1_xdot, integrate_L96_2t
+from project_1_archive.src.l96_model import L96, RK2, RK4, EulerFwd, L96_eq1_xdot, integrate_L96_2t
 
 time_steps = [100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200]  # Different time steps for datasets
 dt = 0.01  # Time step size

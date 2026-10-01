@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from model_classes import FlexibleFCNN
+from project_1_archive.src.model_classes import FlexibleFCNN
 
 steps = [100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200]
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

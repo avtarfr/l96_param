@@ -21,7 +21,7 @@ current_dir = os.path.abspath(os.getcwd())
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from l96_model import L96
+from project_1_archive.src.l96_model import L96
 
 # ---- config, must match generate_data.py ----
 time_steps = [100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200]
